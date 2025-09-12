@@ -1,0 +1,335 @@
+/* Container chính của trang posts */
+.posts-container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 24px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: 'Arial', sans-serif;
+}
+
+/* Tiêu đề */
+.posts-container h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+/* Tabs (My Posts, All Posts, New Post) */
+.tab-container {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  align-items: center;
+}
+
+.tab-button {
+  background-color: #1976d2;
+  color: #ffffff;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.tab-button:hover:not(:disabled) {
+  background-color: #1565c0;
+}
+
+.tab-button:disabled {
+  background-color: #90caf9;
+  cursor: not-allowed;
+}
+
+.new-post-link {
+  margin-left: auto;
+}
+
+.new-post-link a {
+  color: #1976d2;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.new-post-link a:hover {
+  text-decoration: underline;
+}
+
+/* Thông báo lỗi */
+.error-message {
+  color: #d32f2f;
+  background-color: #ffebee;
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* Thông báo loading */
+.loading-message {
+  text-align: center;
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 16px;
+}
+
+/* Danh sách bài viết */
+.posts-list {
+  list-style: none;
+  padding: 0;
+}
+
+.post-item {
+  border: 1px solid #ddd;
+  padding: 12px;
+  margin-bottom: 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  
+}
+.post-item:hover{
+    background-color: #f3f0f0;
+}
+.post-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.post-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.post-meta {
+  font-size: 12px;
+  color: #666;
+}
+
+.post-content {
+  font-size: 14px;
+  color: #555;
+  white-space: pre-wrap;
+  margin-bottom: 8px;
+}
+
+.post-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.action-button {
+  background-color: #1976d2;
+  color: #ffffff;
+  padding: 6px 12px;
+  font-size: 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.action-button:hover:not(:disabled) {
+  background-color: #1565c0;
+}
+
+.action-button:disabled {
+  background-color: #90caf9;
+  cursor: not-allowed;
+}
+
+/* Phân trang */
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  justify-content: center;
+}
+
+.pagination-button {
+  background-color: #1976d2;
+  color: #ffffff;
+  padding: 6px 12px;
+  font-size: 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.pagination-button:hover:not(:disabled) {
+  background-color: #1565c0;
+}
+
+.pagination-button:disabled {
+  background-color: #90caf9;
+  cursor: not-allowed;
+}
+
+.pagination-info {
+  font-size: 14px;
+  color: #555;
+}
+
+.pagination-select {
+  padding: 6px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+/* Modal chỉnh sửa */
+.edit-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.edit-modal-content {
+  background: #ffffff;
+  width: min(640px, 90vw);
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.edit-modal h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 16px;
+}
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.edit-form label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #555;
+}
+
+.edit-form input,
+.edit-form textarea {
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.edit-form input:focus,
+.edit-form textarea:focus {
+  border-color: #1976d2;
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+}
+
+.edit-form textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.char-count {
+  text-align: right;
+  font-size: 12px;
+  color: #666;
+}
+
+.char-count.exceeded {
+  color: #d32f2f;
+}
+
+.edit-actions {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.edit-button {
+  background-color: #1976d2;
+  color: #ffffff;
+  padding: 8px 16px;
+  font-size: 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.edit-button:hover:not(:disabled) {
+  background-color: #1565c0;
+}
+
+.edit-button:disabled {
+  background-color: #90caf9;
+  cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .posts-container {
+    margin: 16px;
+    padding: 16px;
+  }
+
+  .posts-container h2 {
+    font-size: 20px;
+  }
+
+  .tab-button {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+
+  .post-title {
+    font-size: 16px;
+  }
+
+  .post-meta {
+    font-size: 11px;
+  }
+
+  .post-content {
+    font-size: 13px;
+  }
+
+  .action-button,
+  .pagination-button,
+  .edit-button {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+
+  .pagination-info,
+  .pagination-select {
+    font-size: 12px;
+  }
+
+  .edit-modal-content {
+    padding: 12px;
+  }
+
+  .edit-modal h3 {
+    font-size: 18px;
+  }
+}
