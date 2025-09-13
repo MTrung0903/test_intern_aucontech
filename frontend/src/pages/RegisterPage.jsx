@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { register } from '../api/auth.js';
 import { useNavigate, Link } from 'react-router-dom';
 import './css/RegisterPage.css';
@@ -8,7 +8,7 @@ export default function RegisterPage() {
   const [form, setForm] = useState({ username: '', email: '', password: '', confirm: '' });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-
+const [passwordStrength, setPasswordStrength] = useState({ level: '', message: '' });
   const validate = () => {
     if (!form.username.trim()) return 'Username is required';
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(form.email)) return 'Invalid email';
@@ -16,7 +16,34 @@ export default function RegisterPage() {
     if (form.password !== form.confirm) return 'Passwords do not match';
     return null;
   };
+  const checkPasswordStrength = (password) => {
+    const minLength = 8;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
 
+    if (!password) {
+      return { level: 'empty', message: 'Password is required' };
+    }
+    if (password.length < 6) {
+      return { level: 'weak', message: 'Password is too short (minimum 6 characters)' };
+    }
+    if (password.length < minLength) {
+      return { level: 'weak', message: 'Password is weak: Use at least 8 characters' };
+    }
+    if (hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar && password.length >= 12) {
+      return { level: 'strong', message: 'Password is strong' };
+    }
+    if ((hasUpperCase || hasLowerCase) && (hasNumber || hasSpecialChar)) {
+      return { level: 'medium', message: 'Password is medium: Add more character types (uppercase, lowercase, numbers, special characters) or increase length' };
+    }
+    return { level: 'weak', message: 'Password is weak: Include uppercase, lowercase, numbers, and special characters' };
+  };
+   useEffect(() => {
+    const strength = checkPasswordStrength(form.password);
+    setPasswordStrength(strength);
+  }, [form.password]);
   const onSubmit = async (e) => {
     e.preventDefault();
     const msg = validate();
@@ -60,6 +87,11 @@ export default function RegisterPage() {
             value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
           />
+          {form.password && (
+            <div className={`password-strength ${passwordStrength.level}`}>
+              {passwordStrength.message}
+            </div>
+          )}
         </div>
         <div className="form-group">
           <label>Confirm Password</label>

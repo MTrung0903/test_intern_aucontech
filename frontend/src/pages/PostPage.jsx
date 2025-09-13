@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { getMyPosts, getAllPosts, deletePost, getPost, updatePost } from '../api/posts.js';
+import { getMyPosts, getAllPosts, deletePost, getPost, updatePost, searchPosts } from '../api/posts.js';
 import {  useAuth } from '../auth/AuthContext.jsx';
 import { Link } from 'react-router-dom';
 import PostDetail from './PostDetail.jsx';
 import './css/PostPage.css';
 
-// Hàm format ngày
+
 const formatDate = (isoString) => {
   const date = new Date(isoString);
   const day = String(date.getDate()).padStart(2, '0');
@@ -24,6 +24,8 @@ export default function PostsPage() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
 
   const [editingId, setEditingId] = useState(null);
   const [editForm, setEditForm] = useState({ title: '', content: '' });
@@ -36,7 +38,12 @@ export default function PostsPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = tab === 'mine' ? await getMyPosts(page, size) : await getAllPosts(page, size);
+      let res;
+      if (isSearching && searchQuery.trim()) {
+        res = await searchPosts(searchQuery.trim(), page, size);
+      } else {
+        res = tab === 'mine' ? await getMyPosts(page, size) : await getAllPosts(page, size);
+      }
       setData(res);
     } catch (err) {
       setError(err?.response?.data || 'Failed to load posts');
@@ -47,7 +54,7 @@ export default function PostsPage() {
 
   useEffect(() => {
     load();
-  }, [tab, page, size]);
+  }, [tab, page, size, isSearching, searchQuery]);
 
 const onDelete = async (id, event) => {
     event.stopPropagation(); 
@@ -87,6 +94,29 @@ const onDelete = async (id, event) => {
     setDetailId(null);
   };
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      setIsSearching(true);
+      setPage(0);
+    } else {
+      setIsSearching(false);
+    }
+  };
+
+  const clearSearch = () => {
+    setSearchQuery('');
+    setIsSearching(false);
+    setPage(0);
+  };
+
+  const handleTabChange = (newTab) => {
+    setTab(newTab);
+    setPage(0);
+    setIsSearching(false);
+    setSearchQuery('');
+  };
+
   const CONTENT_MAX = 65535;
   const saveEdit = async () => {
     if (!editForm.title.trim()) { setEditError('Title is required'); return; }
@@ -109,20 +139,42 @@ const onDelete = async (id, event) => {
   return (
     <div className="posts-container">
       <h2>Posts</h2>
+      
+      {/* Search Form */}
+      <div className="search-container">
+        <form onSubmit={handleSearch} className="search-form">
+          <input
+            type="text"
+            placeholder="Search posts by title..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="search-input"
+          />
+          <button type="submit" className="search-button">
+            Search
+          </button>
+          {isSearching && (
+            <button type="button" onClick={clearSearch} className="clear-search-button">
+              Clear
+            </button>
+          )}
+        </form>
+      </div>
+
       <div className="tab-container">
         {token && 
         <button
           className="tab-button"
-          onClick={() => { setTab('mine'); setPage(0); }}
-          disabled={tab === 'mine'}
+          onClick={() => handleTabChange('mine')}
+          disabled={tab === 'mine' && !isSearching}
         >
           My Posts
         </button>
         }
         <button
           className="tab-button"
-          onClick={() => { setTab('all'); setPage(0); }}
-          disabled={tab === 'all'}
+          onClick={() => handleTabChange('all')}
+          disabled={tab === 'all' && !isSearching}
         >
           All Posts
         </button>
@@ -132,6 +184,11 @@ const onDelete = async (id, event) => {
       </div>
       {error && <div className="error-message">{error}</div>}
       {loading && <div className="loading-message">Loading...</div>}
+      {isSearching && searchQuery && (
+        <div className="search-info">
+          <p>Search results for: "<strong>{searchQuery}</strong>" ({data?.totalElements || 0} results)</p>
+        </div>
+      )}
       {!loading && data && (
         <>
           <ul className="posts-list">
@@ -144,7 +201,7 @@ const onDelete = async (id, event) => {
                 </div>
                 <strong className="post-title" >{p.title}</strong>
                 <p className="post-content">{p.content.slice(0, 160)}{p.content.length > 160 ? '…' : ''}</p>
-                {tab === 'mine' && (
+                {!isSearching && tab === 'mine' && (
                   <div className="post-actions">
                     <button className="action-button" onClick={(e) => openEdit(p.id, e)}>Edit</button>
                     <button className="action-button" onClick={(e) => onDelete(p.id, e)}>Delete</button>

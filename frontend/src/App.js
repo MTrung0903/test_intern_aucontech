@@ -19,7 +19,22 @@ function ProtectedRoute({ children }) {
 function Navbar() {
   const { token, logout } = useAuth();
   const navigate = useNavigate();
-const username = token ? jwtDecode(token).sub : null;
+  
+  
+  const getUsername = () => {
+    if (!token) return null;
+    try {
+      const decoded = jwtDecode(token);
+      return decoded.sub || null;
+    } catch (error) {
+      
+      console.warn('Invalid token detected, clearing...');
+      logout();
+      return null;
+    }
+  };
+  
+  const username = getUsername();
   return (
 <nav className="navbar">
       <div className="nav-left">

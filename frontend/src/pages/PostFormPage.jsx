@@ -11,7 +11,7 @@ export default function PostFormPage() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // MySQL TEXT max length is 65,535 bytes; assume utf-8 ~ 65,535 chars upper bound
+ 
   const CONTENT_MAX = 65535;
 
   useEffect(() => {
