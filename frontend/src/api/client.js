@@ -2,15 +2,22 @@ import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 
 const client = axios.create({
-  baseURL: '/api',
+  baseURL: 'https://be-posts-6a21f410ce54.herokuapp.com/api',
 });
 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 const isValidToken = (token) => {
   if (!token) return false;
   try {
     const decoded = jwtDecode(token);
+<<<<<<< Updated upstream
 
+=======
+    
+>>>>>>> Stashed changes
     const currentTime = Date.now() / 1000;
     return decoded.exp > currentTime;
   } catch (error) {
@@ -24,7 +31,11 @@ client.interceptors.request.use((config) => {
     config.headers = config.headers ?? {};
     config.headers['Authorization'] = `Bearer ${token}`;
   } else if (token) {
+<<<<<<< Updated upstream
 
+=======
+    
+>>>>>>> Stashed changes
     localStorage.removeItem('token');
   }
   return config;
@@ -45,5 +56,4 @@ client.interceptors.response.use(
 );
 
 export default client;
-
 
